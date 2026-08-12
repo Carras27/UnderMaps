@@ -3,4 +3,4 @@ geopandas
 scikit-learn
 matplotlib
 plotly
-
+requests
