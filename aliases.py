@@ -39,7 +39,7 @@ ALIAS_VALORES_CCAA = {
     "region de murcia": "Región de Murcia",
     "comunidad valenciana": "Comunitat Valenciana",
     "valencia": "Comunitat Valenciana",
-    "aragon": "Aragón"
+    "aragon": "Aragón",
     "euskadi": "País Vasco",
     "pais vasco": "País Vasco",
     # añadir...
