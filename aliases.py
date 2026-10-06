@@ -1,0 +1,37 @@
+# Nombres posibles de la columna de comunidades (en minúsculas y sin tildes)
+ALIAS_COLUMNA_CCAA = {
+    "comunidades autonomas",
+    "comunidades y ciudades autonomas",
+    "comunidad autonoma",
+    "ccaa",
+    "acom_name",
+}
+
+# Nombres posibles de la columna de provincias
+ALIAS_COLUMNA_PROVINCIA = {
+    "provincias",
+    "provincia",
+}
+
+# Nombre normalizado -> nombre canónico (el del GeoJSON)
+ALIAS_VALORES_CCAA = {
+    "melilla": "Ciudad Autónoma de Melilla",
+    "melilla ciudad autonoma de": "Ciudad Autónoma de Melilla",
+    "madrid comunidad de": "Comunidad de Madrid",
+    "madrid": "Comunidad de Madrid",
+    "navarra": "Comunidad Foral de Navarra",
+    "navarra comunidad foral de": "Comunidad Foral de Navarra",
+    "castilla leon": "Castilla y León",
+    "asturias": "Principado de Asturias",
+    "castilla la mancha": "Castilla-La Mancha",
+    "ceuta": "Ciudad Autónoma de Ceuta",
+    "ceuta ciudad autonoma de": "Ciudad Autónoma de Ceuta",
+    "islas baleares": "Illes Balears",
+    "baleares": "Illes Balears",
+    "islas canarias": "Canarias",
+    "murcia region de": "Región de Murcia",
+    "murcia": "Región de Murcia",
+    "comunidad valenciana": "Comunitat Valenciana",
+    "Euskadi": "País Vasco",
+    # añadir...
+}
