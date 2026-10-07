@@ -64,8 +64,10 @@ def elegir_valor(df: pd.DataFrame, columna: str, valor=None) -> pd.DataFrame:
         periodo = input("Elige una: ")
 
     valor = str(valor).strip()
+    
     if valor not in opciones:
         raise ValueError(f"'{valor}' no está en '{columna}'. Opciones: {opciones}")
+
 
     return df[valores == valor].drop(columns=columna)
 
@@ -82,19 +84,19 @@ def leer_datos(ruta_csv: str, elecciones: dict | None = None, sep: str = ";", de
     # Recorre todas las columnas
     for columna in list(df.columns):
         nombre = _limpiar(columna)
-        categoria = _categoria_a_elegir(nombre)
 
         # Borra todas las lineas con provincias y comarcas
         if nombre in ALIAS_COLUMNA_PROVINCIA:
             df = _quedarse_con_vacias(df, columna)
         elif nombre in ALIAS_COLUMNA_COMARCA:
             df = _quedarse_con_vacias(df, columna)
-
-        elif categoria:
-            df = elegir_valor(df, columna, elecciones.get(categoria))
         # Renombra la columna de Comunidades Autonomas
         elif nombre in ALIAS_COLUMNA_CCAA:
             df = df.rename(columns={columna: "ccaa"})
+        else: # Cualquier otra columna, si tiene varias opciones, se elige una
+            clave = _categoria_a_elegir(nombre) or nombre
+            df = elegir_valor(df, columna, elecciones.get(clave))
+        
 
     
     if "ccaa" not in df.columns:
