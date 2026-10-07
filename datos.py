@@ -103,7 +103,7 @@ def leer_datos(ruta_csv: str, elecciones: dict | None = None, sep: str = ";", de
             clave = _categoria_a_elegir(nombre) or nombre
             df, elegido = elegir_valor(df, columna, elecciones.get(clave))
             if elegido is not None:
-                titulo.append(f"{columna}: {elegido}")
+                titulo.append(f"{elegido}")
         
     # Da un error si no encuentra la columna de Comunidades Autónomas
     if "ccaa" not in df.columns:
