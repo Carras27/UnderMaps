@@ -13,6 +13,20 @@ ALIAS_COLUMNA_PROVINCIA = {
     "provincia",
 }
 
+# Nombres posibles de la columna de comarcas
+ALIAS_COLUMNA_COMARCA = {
+    "comarca",
+    "comarcas",
+}
+
+# Nombres posibles de la columna de periodos
+ALIAS_COLUMNA_PERIODO = {
+    "periodo",
+    "ano",
+    "anio",
+    "year",
+}
+
 # Nombre normalizado -> nombre canónico (el del GeoJSON)
 ALIAS_VALORES_CCAA = {
     "melilla": "Ciudad Autónoma de Melilla",
