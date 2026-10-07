@@ -19,12 +19,12 @@ ALIAS_COLUMNA_COMARCA = {
     "comarcas",
 }
 
-# Nombres posibles de la columna de periodos
-ALIAS_COLUMNA_PERIODO = {
-    "periodo",
-    "ano",
-    "anio",
-    "year",
+# Columnas donde hay que elegir un valor. Clave: nombre de la categoría.
+# Valor: posibles nombres de la columna 
+ALIAS_COLUMNAS_A_ELEGIR = {
+    "periodo": {"periodo", "ano", "anio", "year"},
+    "sexo": {"sexo", "sexos"},
+    # añadir
 }
 
 # Nombre normalizado -> nombre canónico (el del GeoJSON)
