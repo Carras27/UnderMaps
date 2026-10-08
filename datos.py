@@ -7,9 +7,10 @@ from pathlib import Path
 from aliases import (
     ALIAS_COLUMNA_CCAA,
     ALIAS_COLUMNA_PROVINCIA,
-    ALIAS_VALORES_CCAA,
     ALIAS_COLUMNA_COMARCA,
     ALIAS_COLUMNAS_A_ELEGIR,
+    ALIAS_VALORES_CCAA,
+    ALIAS_VALORES_PROVINCIAS,
 )
 
 
@@ -32,6 +33,15 @@ def _normalizar_nombre_ccaa(valor: str) -> str:
     limpio = re.sub(r"^\d+\s+", "", limpio)  # quita el código numérico del INE
     print(ALIAS_VALORES_CCAA.get(limpio, valor))
     return ALIAS_VALORES_CCAA.get(limpio, valor)
+
+def _normalizar_nombre_provincias(valor: str) -> str:
+    """
+        Normaliza el nombre de la provincia y lo busca entre los aliases.
+    """
+    limpio = _limpiar(valor)
+    limpio = re.sub(r"^\d+\s+", "", limpio)  # quita el código numérico del INE
+    print(ALIAS_VALORES_PROVINCIAS.get(limpio, valor))
+    return ALIAS_VALORES_PROVINCIAS.get(limpio, valor)
 
 def _quedarse_con_vacias(df: pd.DataFrame, columna: str) -> pd.DataFrame:
     """
@@ -73,7 +83,7 @@ def elegir_valor(df: pd.DataFrame, columna: str, valor=None) -> tuple[pd.DataFra
 
     return df[valores == valor].drop(columns=columna), (None if unica else valor)
 
-def leer_datos(ruta_csv: str, elecciones: dict | None = None, sep: str = ";", decimal: str = ",", thousands: str = ".") -> pd.DataFrame:
+def leer_datos_ccaa_espana(ruta_csv: str, elecciones: dict | None = None, sep: str = ";", decimal: str = ",", thousands: str = ".") -> pd.DataFrame:
     """
         Lee un CSV del INE, localiza la columna de CCAA, ignora provincias
         y normaliza nombres.
@@ -116,5 +126,53 @@ def leer_datos(ruta_csv: str, elecciones: dict | None = None, sep: str = ";", de
 
     # Aplica la normalizacion a cada valor de la columna
     df["ccaa"] = df["ccaa"].map(_normalizar_nombre_ccaa)
+
+    return df, " | ".join(titulo)
+
+
+def leer_datos_provincias_espana(ruta_csv: str, elecciones: dict | None = None, sep: str = ";", decimal: str = ",", thousands: str = ".") -> pd.DataFrame:
+    """
+        Lee un CSV del INE, localiza la columna de provincias, ignora ccaa
+        y normaliza nombres.
+    """
+    elecciones = elecciones or {}
+    titulo = [Path(ruta_csv).stem.replace("_", " ")] # Quita la extensión al nombre del fichero
+
+    # Convierte el archivo leido en una tabla de pandas (DataFrame).
+    df = pd.read_csv(ruta_csv, sep=sep, decimal=decimal, thousands=thousands, encoding="utf-8")
+
+    # Renombramos la ultima columna, que contendra los datos a representar
+    df = df.rename(columns={df.columns[-1]: "datos"})
+
+    # Recorre todas las columnas, salvo la de datos
+    for columna in list(df.columns[:-1]):
+        nombre = _limpiar(columna)
+
+        # Ignora la columna de CCAA
+        if nombre in ALIAS_COLUMNA_CCAA:
+            df = df.drop(columns=columna)
+        # Borra todas las lineas con comarcas
+        elif nombre in ALIAS_COLUMNA_COMARCA:
+            df = _quedarse_con_vacias(df, columna)
+        # Renombra la columna de Provincias
+        elif nombre in ALIAS_COLUMNA_PROVINCIA:
+            df = df.rename(columns={columna: "provincias"})
+        else: # Cualquier otra columna, si tiene varias opciones, se elige una
+            clave = _categoria_a_elegir(nombre) or nombre
+            df, elegido = elegir_valor(df, columna, elecciones.get(clave))
+            if elegido is not None:
+                titulo.append(f"{elegido}")
+        
+    # Da un error si no encuentra la columna de provincias
+    if "provincias" not in df.columns:
+        raise ValueError(f"No encuentro columna de provincias en {ruta_csv}. Columnas: {list(df.columns)}")
+
+    # Elimina las filas de la columna provincias que estén vacías o representen un valor total.
+    provincias = df["provincias"].fillna("").astype(str)
+    es_nacional = (provincias.str.strip() == "") | provincias.map(_limpiar).str.startswith("total")
+    df = df[~es_nacional].copy()
+
+    # Aplica la normalizacion a cada valor de la columna
+    df["provincias"] = df["provincias"].map(_normalizar_nombre_provincias)
 
     return df, " | ".join(titulo)
