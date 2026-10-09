@@ -1,2 +1,2 @@
 # UnderMaps
-Proyecto para analizar datos socio-económicos de España (por CA o provincia) mediante clustering con visualización gráfica de los resultados.
+A partir de mapas GeoJSON, y bases de datos del INE, indicándole el mapa a utilizar y la base de datos a utilizar, con el uso de GeoPandas generación de mapas de España con representación de datos ya sea divididos por CCAA o provincias.
